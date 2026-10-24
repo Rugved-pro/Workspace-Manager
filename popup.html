@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { width: 280px; font-family: sans-serif; padding: 12px; }
+    input[type="text"], button { width: 100%; margin-bottom: 8px; padding: 6px; box-sizing: border-box; }
+    .tab-item { display: flex; align-items: center; gap: 6px; font-size: 12px; margin: 4px 0; }
+    .tab-item label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #tabList { max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 6px; margin-bottom: 8px; }
+    .workspace-btn { background: #4CAF50; color: white; border: none; cursor: pointer; text-align: left; }
+  </style>
+</head>
+<body>
+  <h4>Save Selected Tabs</h4>
+  <div id="tabList"></div>
+  <input type="text" id="workspaceName" placeholder="Workspace Name (e.g., DSA)">
+  <button id="saveBtn">Save Selected Tabs</button>
+  <hr>
+  <div id="workspaceList"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

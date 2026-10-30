@@ -4,7 +4,19 @@
   "version": "2.0",
   "description": "Save, edit, and manage window tab workspaces with independent To-Do lists and persistent cache.",
   "permissions": ["tabs", "storage", "unlimitedStorage"],
+  "icons": {
+    "16": "Cheerful Boy Typing on Keyboard.png",
+    "32": "Cheerful Boy Typing on Keyboard.png",
+    "48": "Cheerful Boy Typing on Keyboard.png",
+    "128": "Cheerful Boy Typing on Keyboard.png"
+  },
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "Cheerful Boy Typing on Keyboard.png",
+      "32": "Cheerful Boy Typing on Keyboard.png",
+      "48": "Cheerful Boy Typing on Keyboard.png",
+      "128": "Cheerful Boy Typing on Keyboard.png"
+    }
   }
 }

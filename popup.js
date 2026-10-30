@@ -352,6 +352,7 @@ async function renderWorkspaces() {
     empty.className = 'empty-state';
     if (entries.length === 0) {
       empty.innerHTML = `
+        <img src="Cheerful Boy Typing on Keyboard.png" alt="Workspace Manager" class="empty-state-logo">
         <div class="empty-state-title">No Saved Workspaces Yet</div>
         <div class="empty-state-desc">Select open tabs above, enter a name, and click Save to create your first workspace with its own To-Do list.</div>
       `;

@@ -1,22 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <style>
-    body { width: 280px; font-family: sans-serif; padding: 12px; }
-    input[type="text"], button { width: 100%; margin-bottom: 8px; padding: 6px; box-sizing: border-box; }
-    .tab-item { display: flex; align-items: center; gap: 6px; font-size: 12px; margin: 4px 0; }
-    .tab-item label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #tabList { max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 6px; margin-bottom: 8px; }
-    .workspace-btn { background: #4CAF50; color: white; border: none; cursor: pointer; text-align: left; }
-  </style>
+  <meta charset="UTF-8">
+  <title>Window Workspace Saver</title>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h4>Save Selected Tabs</h4>
-  <div id="tabList"></div>
-  <input type="text" id="workspaceName" placeholder="Workspace Name (e.g., DSA)">
-  <button id="saveBtn">Save Selected Tabs</button>
-  <hr>
-  <div id="workspaceList"></div>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">Workspace Manager</div>
+        <div class="brand-subtitle">Tabs &amp; To-Do Lists</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="exportCacheBtn" class="icon-btn" title="Export Workspaces Backup (JSON)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </button>
+      <button id="importCacheBtn" class="icon-btn" title="Import Workspaces Backup (JSON)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+      </button>
+      <input type="file" id="importFileInput" accept=".json" style="display: none;">
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Save New Workspace Card -->
+    <section id="createCard" class="create-card">
+      <div id="createCardHeader" class="create-card-header">
+        <div class="create-card-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <span>Create Workspace from Current Tabs</span>
+        </div>
+        <svg class="chevron-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <div class="create-card-body">
+        <div class="section-toolbar">
+          <span id="selectedTabsCount">0 tabs selected</span>
+          <div class="toolbar-links">
+            <button type="button" id="selectAllTabsBtn" class="link-btn">Select All</button>
+            <span>&middot;</span>
+            <button type="button" id="deselectAllTabsBtn" class="link-btn">Clear</button>
+          </div>
+        </div>
+
+        <div id="tabList" class="open-tabs-list"></div>
+
+        <div class="create-form-row">
+          <input type="text" id="workspaceName" placeholder="Workspace name (e.g., DSA, Project X)">
+          <button id="saveBtn" class="btn btn-primary" style="flex-shrink: 0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved Workspaces Section -->
+    <div class="workspaces-header">
+      <div class="workspaces-heading">
+        <span>Saved Workspaces</span>
+        <span id="workspaceCountBadge" class="count-pill">0</span>
+      </div>
+      <div class="search-box">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchWorkspacesInput" placeholder="Search workspaces...">
+      </div>
+    </div>
+
+    <div id="workspaceList" class="workspace-list"></div>
+  </main>
+
+  <div id="toastContainer" class="toast-container"></div>
+
   <script src="popup.js"></script>
 </body>
 </html>

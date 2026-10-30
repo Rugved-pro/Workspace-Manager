@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Window Workspace Saver",
-  "version": "1.0",
-  "description": "Save current window tabs as a workspace and restore them later.",
-  "permissions": ["tabs", "storage"],
+  "version": "2.0",
+  "description": "Save, edit, and manage window tab workspaces with independent To-Do lists and persistent cache.",
+  "permissions": ["tabs", "storage", "unlimitedStorage"],
   "action": {
     "default_popup": "popup.html"
   }
